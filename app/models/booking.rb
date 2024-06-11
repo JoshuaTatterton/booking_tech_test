@@ -2,7 +2,7 @@ class Booking < ApplicationRecord
   has_many :modification_requests
   has_many :cancellation_requests
 
-  # While status is not neccesary on booking it is helpful for expressing intent
+  # While status is not necessary on booking it is helpful for expressing intent
   # in other methods by encapsulating it in the status updates.
   enum :status, { pending: 0, confirmed: 1, cancelled: 2 }
 
