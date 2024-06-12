@@ -1,4 +1,5 @@
 class Booking < ApplicationRecord
+  has_many :booking_prices
   has_many :modification_requests
   has_many :cancellation_requests
 
@@ -11,18 +12,34 @@ class Booking < ApplicationRecord
   end
 
   def confirm!
-    update!(status: :confirmed, price: guest_price)
+    transaction do
+      update!(status: :confirmed, price: guest_price)
+      # These booking prices creation methods, should be enough if the management of
+      # the booking prices is done exclusively through these methods.
+      # If not then it might be worth moving to an after update callback to create
+      # booking prices across the board.
+      # Another option could be to move it to a trigger within the database itself
+      # to create booking prices when the Booking is updated, or possibly when a
+      # Modify/Cancel request is approved.
+      booking_prices.create!(price: guest_price)
+    end
   end
 
   def modify!(new_price:)
-    # Setting status just incase a pending/cancelled Booking is modified.
-    # It should have been cause by validations (skipped for tech test) but in the
-    # scenario it gets by it makes more sense to see a confirmed Booking with a price
-    # rather than a pending/cancelled Booking with a stored/non zero price.
-    update!(status: :confirmed, price: new_price)
+    transaction do
+      # Setting status just incase a pending/cancelled Booking is modified.
+      # It should have been cause by validations (skipped for tech test) but in the
+      # scenario it gets by it makes more sense to see a confirmed Booking with a price
+      # rather than a pending/cancelled Booking with a stored/non zero price.
+      update!(status: :confirmed, price: new_price)
+      booking_prices.create!(price: new_price)
+    end
   end
 
   def cancel!
-    update!(status: :cancelled, price: 0)
+    transaction do
+      update!(status: :cancelled, price: 0)
+      booking_prices.create!(price: 0)
+    end
   end
 end
