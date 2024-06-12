@@ -15,7 +15,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_11_150632) do
   enable_extension "plpgsql"
 
   create_table "booking_prices", force: :cascade do |t|
-    t.decimal "price", precision: 12, scale: 3
+    t.decimal "price", precision: 12, scale: 3, null: false
     t.datetime "created_at", null: false
     t.bigint "booking_id", null: false
     t.index ["booking_id"], name: "index_booking_prices_on_booking_id"
