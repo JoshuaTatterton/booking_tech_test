@@ -16,6 +16,8 @@ default: &default
 development:
   <<: *default
   database: booking_tech_test_development
+  username: postgres
+  password: ""
   port: <%= ENV["DATABASE_PORT"] || "5432" %>
   host: <%= ENV["DATABASE_HOST"] || "127.0.0.1" %>
 

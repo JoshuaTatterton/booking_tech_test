@@ -9,6 +9,7 @@ class BackfillBookingPrices
     bookings = Booking.left_joins(:booking_prices)
       .where("booking_prices.price IS NULL")
       .where(status: [:confirmed, :cancelled])
+      .order(:id)
       .limit(@batch_size)
 
     Booking.transaction do

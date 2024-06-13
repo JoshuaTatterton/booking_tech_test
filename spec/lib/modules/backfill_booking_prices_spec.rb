@@ -65,7 +65,7 @@ describe "BackfillBookingPrices" do
         # Changed prices
         expect(booking_1.booking_prices.count).to eq(1)
         expect(booking_1.booking_prices.first.price).to eq(10)
-        # Unhanged prices
+        # Unchanged prices
         expect(booking_2.booking_prices.count).to eq(0)
       end
     end
