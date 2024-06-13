@@ -3,6 +3,9 @@ class Booking < ApplicationRecord
   has_many :modification_requests
   has_many :cancellation_requests
 
+  # Custom read only relationship which accesses booking_prices with a scope
+  has_many :price_changes, -> { order(created_at: :desc) }
+
   # While status is not necessary on booking it is helpful for expressing intent
   # in other methods by encapsulating it in the status updates.
   enum :status, { pending: 0, confirmed: 1, cancelled: 2 }

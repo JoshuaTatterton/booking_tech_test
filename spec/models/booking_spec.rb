@@ -25,6 +25,26 @@ describe Booking do
     end
   end
 
+  describe "#price_changes" do
+    it "returns PriceChanges in most recent order" do
+      # Arrange
+      booking = Booking.create(status: :confirmed, price: 11)
+      first_price = booking.booking_prices.create!(price: 50, created_at: 3.day.ago)
+      final_price = booking.booking_prices.create!(price: 11, created_at: 1.day.ago)
+      second_price = booking.booking_prices.create!(price: 24, created_at: 2.day.ago)
+
+      # Act
+      price_changes = booking.price_changes
+
+      # Assert
+      expect(price_changes).to eq([
+        PriceChange.find(final_price.id),
+        PriceChange.find(second_price.id),
+        PriceChange.find(first_price.id)
+      ])
+    end
+  end
+
   describe "#confirm!" do
     it "updates the status to `confirmed`" do
       # Arrange
