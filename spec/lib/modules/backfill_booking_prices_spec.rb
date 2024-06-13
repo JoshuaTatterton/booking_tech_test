@@ -2,13 +2,15 @@ require "modules/backfill_booking_prices"
 
 describe "BackfillBookingPrices" do
   describe "#call" do
-    it "creates BookingPrices for confirmed & cancelled Bookings with no prices" do
+    it "creates BookingPrices for confirmed & cancelled Bookings with no existing BookingPrices" do
       # Arrange
-      pending_booking_no_price = Booking.create(status: :pending, price: 10)
+      # Bookings to create prices for
       confirmed_booking_no_price = Booking.create(status: :confirmed, price: 10)
+      cancelled_booking_no_price = Booking.create(status: :cancelled, price: 0)
+      # Booking to not create prices for
+      pending_booking_no_price = Booking.create(status: :pending, price: 10)
       confirmed_booking_with_price = Booking.create(status: :confirmed, price: 10)
       confirmed_booking_with_price.booking_prices.create(price: 10)
-      cancelled_booking_no_price = Booking.create(status: :cancelled, price: 0)
       cancelled_booking_with_price = Booking.create(status: :cancelled, price: 0)
       cancelled_booking_with_price.booking_prices.create(price: 0)
 

@@ -18,7 +18,7 @@ class BackfillBookingPrices
         # that price, this is to try and preserve historical accuracy when
         # aggregating data.
         booking.booking_prices.create!(
-          price: booking.price,
+          price: booking.guest_price,
           created_at: booking.updated_at
         )
         # This could be updated to create a BookingPrice for every approved
