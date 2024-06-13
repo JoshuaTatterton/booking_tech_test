@@ -42,50 +42,52 @@ describe SalesCalculator do
   end
 
   describe "#call" do
-    it "includes prices within the provided date range" do
-      # Arrange - 2 BookingPrices to find
-      booking_1 = Booking.create
-      booking_price_1 = booking_1.booking_prices.create!(price: 10, created_at: 3.days.ago)
-      booking_2 = Booking.create
-      booking_price_2 = booking_2.booking_prices.create!(price: 10, created_at: 3.days.ago)
+    context "sums up prices of BookingPrices," do
+      it "includes prices within the provided date range" do
+        # Arrange - 2 BookingPrices to find
+        booking_1 = Booking.create
+        booking_price_1 = booking_1.booking_prices.create!(price: 10, created_at: 3.days.ago)
+        booking_2 = Booking.create
+        booking_price_2 = booking_2.booking_prices.create!(price: 10, created_at: 3.days.ago)
 
-      # Act
-      calculator = SalesCalculator.new(start_date: 5.days.ago, end_date: 2.days.ago)
-      total_sales = calculator.call
+        # Act
+        calculator = SalesCalculator.new(start_date: 5.days.ago, end_date: 2.days.ago)
+        total_sales = calculator.call
 
-      # Assert
-      expect(total_sales).to eq(20)
-    end
+        # Assert
+        expect(total_sales).to eq(20)
+      end
 
-    it "ignores prices outside the provided date range" do
-      # Arrange - 2 BookingPrices to find
-      booking_1 = Booking.create
-      booking_1.booking_prices.create!(price: 10, created_at: 7.days.ago) # Too old
-      booking_2 = Booking.create
-      booking_2.booking_prices.create!(price: 10, created_at: 1.day.ago) # Too new
+      it "ignores prices outside the provided date range" do
+        # Arrange - 2 BookingPrices to find
+        booking_1 = Booking.create
+        booking_1.booking_prices.create!(price: 10, created_at: 7.days.ago) # Too old
+        booking_2 = Booking.create
+        booking_2.booking_prices.create!(price: 10, created_at: 1.day.ago) # Too new
 
-      # Act
-      calculator = SalesCalculator.new(start_date: 5.days.ago, end_date: 2.days.ago)
-      total_sales = calculator.call
+        # Act
+        calculator = SalesCalculator.new(start_date: 5.days.ago, end_date: 2.days.ago)
+        total_sales = calculator.call
 
-      # Assert
-      expect(total_sales).to eq(0)
-    end
+        # Assert
+        expect(total_sales).to eq(0)
+      end
 
-    it "includes only the most recent price for a booking within the date range" do
-      # Arrange - 2 BookingPrices to find
-      booking = Booking.create
-      booking.booking_prices.create!(price: 1000, created_at: 7.days.ago) # Too old
-      booking.booking_prices.create!(price: 100, created_at: 4.days.ago) # Within range but not the newest
-      booking.booking_prices.create!(price: 10, created_at: 3.days.ago) # Within range and the newest
-      booking.booking_prices.create!(price: 1, created_at: 1.day.ago) # Too new
+      it "includes only the most recent price for a booking within the date range" do
+        # Arrange - 2 BookingPrices to find
+        booking = Booking.create
+        booking.booking_prices.create!(price: 1000, created_at: 7.days.ago) # Too old
+        booking.booking_prices.create!(price: 100, created_at: 4.days.ago) # Within range but not the newest
+        booking.booking_prices.create!(price: 10, created_at: 3.days.ago) # Within range and the newest
+        booking.booking_prices.create!(price: 1, created_at: 1.day.ago) # Too new
 
-      # Act
-      calculator = SalesCalculator.new(start_date: 5.days.ago, end_date: 2.days.ago)
-      total_sales = calculator.call
+        # Act
+        calculator = SalesCalculator.new(start_date: 5.days.ago, end_date: 2.days.ago)
+        total_sales = calculator.call
 
-      # Assert
-      expect(total_sales).to eq(10)
+        # Assert
+        expect(total_sales).to eq(10)
+      end
     end
   end
 end

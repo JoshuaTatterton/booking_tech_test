@@ -1,6 +1,6 @@
 describe Booking do
   describe ".total_sales" do
-    it "should return SalesCalculator value for provided date range" do
+    it "should return SalesCalculator value for a provided date range" do
       # Arrange
       dummy_calculator = double(:calculator, call: 25)
       allow(SalesCalculator).to receive(:new).and_return(dummy_calculator)
@@ -19,7 +19,7 @@ describe Booking do
       end
     end
 
-    it "should default end date to now if not provided" do
+    it "should default end date to current date if not provided" do
       # Arrange
       dummy_calculator = double(:calculator, call: 25)
       allow(SalesCalculator).to receive(:new).and_return(dummy_calculator)
