@@ -11,13 +11,15 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: postgres
-  password: ""
   timeout: 5000
 
 development:
   <<: *default
   database: booking_tech_test_development
+  username: postgres
+  password: ""
+  port: <%= ENV["DATABASE_PORT"] || "5432" %>
+  host: <%= ENV["DATABASE_HOST"] || "127.0.0.1" %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -25,8 +27,8 @@ development:
 test:
   <<: *default
   database: booking_tech_test_test
-  password: ""
   username: postgres
+  password: ""
   port: <%= ENV["DATABASE_PORT"] || "5432" %>
   host: <%= ENV["DATABASE_HOST"] || "127.0.0.1" %>
 
