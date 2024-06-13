@@ -10,6 +10,13 @@ class Booking < ApplicationRecord
   # in other methods by encapsulating it in the status updates.
   enum :status, { pending: 0, confirmed: 1, cancelled: 2 }
 
+  class << self
+    def total_sales(start_date:, end_date: Time.now)
+      calculator = SalesCalculator.new(start_date: start_date, end_date: end_date)
+      calculator.call
+    end
+  end
+
   def guest_price
     price || BookingCalculator.new.call
   end

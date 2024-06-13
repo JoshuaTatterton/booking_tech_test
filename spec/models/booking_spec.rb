@@ -1,4 +1,46 @@
 describe Booking do
+  describe ".total_sales" do
+    it "should return SalesCalculator value for provided date range" do
+      # Arrange
+      dummy_calculator = double(:calculator, call: 25)
+      allow(SalesCalculator).to receive(:new).and_return(dummy_calculator)
+      start_date = 2.days.ago
+      end_date = 1.day.ago
+
+      # Act
+      total_sales = Booking.total_sales(start_date: start_date, end_date: end_date)
+
+      # Assert
+      aggregate_failures do
+        expect(total_sales).to eq(25)
+
+        expect(SalesCalculator).to have_received(:new).with(start_date: start_date, end_date: end_date).once
+        expect(dummy_calculator).to have_received(:call).once
+      end
+    end
+
+    it "should default end date to now if not provided" do
+      # Arrange
+      dummy_calculator = double(:calculator, call: 25)
+      allow(SalesCalculator).to receive(:new).and_return(dummy_calculator)
+
+      start_date = 2.days.ago
+      current_date = "now"
+      allow(Time).to receive(:now).and_return(current_date)
+
+      # Act
+      total_sales = Booking.total_sales(start_date: start_date)
+
+      # Assert
+      aggregate_failures do
+        expect(total_sales).to eq(25)
+
+        expect(SalesCalculator).to have_received(:new).with(start_date: start_date, end_date: current_date).once
+        expect(dummy_calculator).to have_received(:call).once
+      end
+    end
+  end
+
   describe "#guest_price" do
     it "should return the BookingCalculator price when no price is available" do
       # Arrange
